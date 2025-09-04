@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="stylesheet" href="https://codepen.io/simeydotme/pen/WNawZXp/be618208e9e17abe52c0fc63379e5f88.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;600;800&amp;display=swap"
+        rel="stylesheet">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="lprincipal">
+            <img src="logo.png">
+            <h1>ESTA ES TU BOLETA VIRTUAL</h1>
+             
+              <div class="step">
+                <h2>Registro e ingreso al evento</h2>
+                <p>Para el registro e ingreso al evento por favor presenta esta boleta junto con tu documento de identidad físico. <br>
+                El registro se llevará a cabo desde el viernes 16 de Mayo a partir de las 5:00pm.
+                </p>
+                <p>En el momento del registro recibirás los materiales y recursos necesarios para tu participación en la conferencia</p>
+              </div>
+            
+              <!--div class="important">
+                ⚠️ Importante: Sin el escaneo del código QR, no se permitirá el ingreso al recinto ni la participación en las actividades.
+              </div-->
+        </div>
+        <main id="app">
+    
+            <section class="ticket">
+    
+                <header class="front">
+                    <div class="holo"></div>
+                    <img class="logo" src="logo.png"
+                        alt="The logo for the Application called Threads, an instagram App. It's a '@' symbol but with the tail going in the opposite direction.">
+                    <aside class="divider"></aside>
+                </header>
+    
+                <section class="back">
+                    <div class="holo"></div>
+                    <img class="logo principal" src="https://diosconsejero.com/assets/new/logo.png"
+                        alt="The logo for the Application called Threads, an instagram App. It's a '@' symbol but with the tail going in the opposite direction.">
+                    <div class="data">
+                        <h3>Día</h3>
+                        <p contenteditable spellcheck=false>16 Mayo 2025</p>
+                        <h3>Hora</h3>
+                        <p contenteditable spellcheck=false>05:00 p.m.</p>
+                        <h3>Type User</h3>
+                        <p id="type" contenteditable spellcheck=false>Presencial</p>
+                        <a class="qr" href="https://.com/" target="_blank">
+                            <div id="qr-result"></div>
+                        </a>
+                    </div>
+    
+                    <aside class="divider">
+                        <div class="username">
+                            <span  contenteditable spellcheck=false>👦🏻 <span id="name"></span> <span id="last"></span></span>
+                        </div>
+                        <span id="mobile" class="usernum" contenteditable spellcheck=false></span>
+                    </aside>
+                </section>
+    
+            </section>
+    
+        </main>
+    </div>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const nombre = params.get('nombre');
+        const apellido = params.get('apellido');
+        console.log(nombre,apellido);
+        fetch(`https://diosconsejero.com/api/materials?nombre=${nombre}&apellido=${apellido}`)
+        .then((res) => res.json())
+        .then((res) =>  {
+            const inf = res[0];
+            document.getElementById("type").textContent = inf.boleta
+            document.getElementById("name").textContent = inf.nombre
+            document.getElementById("last").textContent = inf.apellido
+            document.getElementById("mobile").textContent = inf.celular
+            generarQR(inf.id)
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+
+        function generarQR(textInfo) {
+            const qrContainer = document.getElementById("qr-result");
+            qrContainer.innerHTML = ""; 
+
+            const texto = `216045${textInfo}`;
+
+            new QRCode(qrContainer, {
+                text: texto,
+                width: 256,
+                height: 256,
+                colorDark: "#fff",
+                colorLight: "#333",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    </script>
+</body>
+
+</html>
