@@ -1,9 +1,9 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         if (!sessionStorage.getItem("authenticated")) {
-            document.body.style.display = 'none';
+           // document.body.style.display = 'none';
             alert("No tienes permisos para acceder a esta página");
-            window.location.href = 'loggin.html';
+            // window.location.href = 'loggin.html';
         }
     });
 </script>
@@ -20,13 +20,14 @@
     <link rel="stylesheet" href="../assets/styles/style.css">
     <style>
         .markeo {
+            background-image: url("../assets/img/textura.png");
             margin-top: 50px;
-            padding: 40px;
-            padding-top: 0;
+            padding-top: 30px;
+            padding-bottom: 30px;
         }
 
         #attendeeForm {
-            width: 60%;
+            width: 80%;
             margin: auto;
             transition: opacity 0.3s ease-in-out;
             display: flex;
@@ -84,11 +85,9 @@
 <body class="container mt-4">
 
     <header>
-        <img class="logo" src="../assets/new/logo.png" alt="Logo de la conferencia" style="width:400px !important" />
         <div class="content_header">
             <div class="bloque_hombre">
-                <h1>Administrador de <span>Asistentes</span></h1>
-                <p>Evento Dios consejero</p>
+                 <img class="logo" src="../assets/img/logoCmdc.png" alt="Logo de la conferencia" />>
             </div>
         </div>
     </header>
@@ -136,7 +135,7 @@
 
     <script>
         const apiUrl = 'https://diosconsejero.com/api/attendees';
-        const encodedKey = btoa("diosconsejeroapi");
+        const encodedKey = btoa("tecnocueroapi");
 
         document.getElementById('attendeeForm').addEventListener('submit', async (e) => {
             e.preventDefault();

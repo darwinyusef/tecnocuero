@@ -19,20 +19,20 @@
 <body>
     <div class="container">
         <div class="lprincipal">
-            <img src="logo.png">
+            <img src="logotecno.png">
             <h1>ESTA ES TU BOLETA VIRTUAL</h1>
              
               <div class="step">
                 <h2>Registro e ingreso al evento</h2>
                 <p>Para el registro e ingreso al evento por favor presenta esta boleta junto con tu documento de identidad físico. <br>
-                El registro se llevará a cabo desde el viernes 16 de Mayo a partir de las 5:00pm.
+                El registro se llevará a cabo el 11 de septiembre en el transcurso del evento.
                 </p>
-                <p>En el momento del registro recibirás los materiales y recursos necesarios para tu participación en la conferencia</p>
+                <p>En el momento del registro recibirás información / recursos necesarios para tu participación en las conferencias o en el gran final</p>
               </div>
             
-              <!--div class="important">
+              <p class="important">
                 ⚠️ Importante: Sin el escaneo del código QR, no se permitirá el ingreso al recinto ni la participación en las actividades.
-              </div-->
+              </p>
         </div>
         <main id="app">
     
@@ -40,21 +40,21 @@
     
                 <header class="front">
                     <div class="holo"></div>
-                    <img class="logo" src="logo.png"
+                    <img class="logo" src="logotecno.png"
                         alt="The logo for the Application called Threads, an instagram App. It's a '@' symbol but with the tail going in the opposite direction.">
                     <aside class="divider"></aside>
                 </header>
     
                 <section class="back">
                     <div class="holo"></div>
-                    <img class="logo principal" src="../assets/img/LOGO  TECNOCURO _blanco.jpg"
+                    <img class="logo principal" src="logotecno.png"
                         alt="The logo for the Application called Threads, an instagram App. It's a '@' symbol but with the tail going in the opposite direction.">
                     <div class="data">
                         <h3>Día</h3>
-                        <p contenteditable spellcheck=false>16 Mayo 2025</p>
+                        <p contenteditable spellcheck=false>11 Septiembre 2025</p>
                         <h3>Hora</h3>
-                        <p contenteditable spellcheck=false>05:00 p.m.</p>
-                        <h3>Type User</h3>
+                        <p contenteditable spellcheck=false>09:00 a.m. a 05:00 p.m.</p>
+                        <h3>Tipo de Usuario</h3>
                         <p id="type" contenteditable spellcheck=false>Presencial</p>
                         <a class="qr" href="https://.com/" target="_blank">
                             <div id="qr-result"></div>
@@ -82,7 +82,7 @@
         const nombre = params.get('nombre');
         const apellido = params.get('apellido');
         console.log(nombre,apellido);
-        fetch(`https://diosconsejero.com/api/materials?nombre=${nombre}&apellido=${apellido}`)
+        fetch(`https://diosconsejero.com/apr/materials?nombre=${nombre}&apellido=${apellido}`)
         .then((res) => res.json())
         .then((res) =>  {
             const inf = res[0];
