@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lector QR con JS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container-lector">
+    <img src="./logotecno.png" alt="logo" width="350" />
+    <h1>REVISIÓN DE EVENTOS DE USUARIO</h1>
+    <p>
+      Escanea el código QR para registrar el ingreso al evento.
+    </p>
+  </div>
+  <div id="qr-reader"></div>
+
+  <div id="miModal" class="modal">
+    <div class="modal-content">
+      <h3>Ingreso registrado exitosamente</h3>
+      <p>El código QR ha sido escaneado correctamente.</p>
+      <p>Código Escaneado:</p>
+      <h1 id="codefin"></h1>
+      <p id="evento1"></p>
+      <p id="evento2"></p>
+
+      <button class="btn" onclick="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+
+
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script>
+
+    const params = new URLSearchParams(window.location.search);
+    const auth = params.get('authorization');
+
+    function mostrarModal() {
+      document.getElementById('miModal').style.display = 'block';
+    }
+
+    function cerrarModal() {
+      document.getElementById('miModal').style.display = 'none';
+
+
+    }
+
+    const agenda = [
+      { id: 1, hora: "09:00 a. m – 09:15 a. m", evento: "Apertura y bienvenida" },
+      { id: 2, hora: "09:15 a. m – 10:00 a. m", evento: "Eje Académico: Estrategias SENA – Full Popular" },
+      { id: 3, hora: "09:15 a. m – 10:00 a. m", evento: "Eje Workshop: Biomarroquinería - Innovación con materiales sostenibles" },
+      { id: 4, hora: "10:00 a. m – 10:45 a. m", evento: "Eje Académico: Inteligencia Artificial y su aplicación en el sector calzado y marroquinería" },
+      { id: 5, hora: "10:00 a. m – 10:45 a. m", evento: "Eje Workshop: Tendencias y diseños personalizados con enfoque diferencial" },
+      { id: 6, hora: "11:15 a. m – 12:00 m", evento: "Eje Académico: Tendencias de Moda Otoño-Invierno para cuero, calzado y marroquinería" },
+      { id: 7, hora: "11:15 a. m – 12:00 m", evento: "Eje Workshop: Técnica de trenzados y algo más" },
+      { id: 8, hora: "12:00 m – 1:00 p. m", evento: "Almuerzo libre" },
+      { id: 9, hora: "1:00 p. m – 1:45 p. m", evento: "Eje Académico: Más allá del stand: participación efectiva en ferias" },
+      { id: 10, hora: "1:00 p. m – 1:45 p. m", evento: "Eje Workshop: Técnica de pirograbado" },
+      { id: 11, hora: "2:00 p. m – 2:45 p. m", evento: "Eje Académico: El futuro de las exportaciones de las industrias del cuero" },
+      { id: 12, hora: "2:00 p. m – 2:45 p. m", evento: "Eje Workshop: Moodboard – Tendencias de moda masculina" },
+      { id: 13, hora: "3:00 p. m – 4:30 p. m", evento: "Pasarela TECNOCUERO 2025 – “Grimorio”" }
+    ];
+
+    // Función para buscar evento por id
+    function getEventoById(id) {
+      return agenda.find(item => item.id === id);
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("codefin").innerText = decodedText;
+      const final = decodedText.replace("010010-", "").trim();
+      fetch(`https://diosconsejero.com/apr/materials/${final}`)
+        .then(res => res.json())
+        .then((res) => {
+          mostrarModal()
+          const evento1 = getEventoById(res.act1);
+          const evento2 = getEventoById(res.act2);
+
+          // Mostrar en pantalla
+          if (evento1) {
+            document.getElementById("evento1").innerText = `${evento1.hora} - ${evento1.evento}`;
+          }
+          if (evento2) {
+            document.getElementById("evento2").innerText = `${evento2.hora} - ${evento2.evento}`;
+          }
+
+          setTimeout(() => {
+            cerrarModal();
+          }, 10000)
+        })
+        .catch((e) => {
+          alert("Error al registrar el ingreso");
+          console.log(e);
+          document.body.remove();
+        })
+    }
+
+    if (auth == "approval") {
+      const html5QrCode = new Html5Qrcode("qr-reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250
+        },
+        onScanSuccess
+      ).catch(err => {
+        console.error("Error al iniciar el escáner:", err);
+      });
+    } else {
+      document.body.remove();
+      alert("No autorizado para ingresar");
+      throw new Error("No autorizado");
+    }
+
+  </script>
+</body>
+
+</html>

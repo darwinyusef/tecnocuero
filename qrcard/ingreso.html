@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lector QR con JS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container-lector">
+    <img src="./logotecno.png" alt="logo" width="350" />
+    <h1>INGRESO USUARIO</h1>
+    <p>
+      Escanea el código QR para registrar el ingreso al evento.
+    </p>
+  </div>
+  <div id="qr-reader"></div>
+
+  <div id="miModal" class="modal">
+    <div class="modal-content">
+      <h3>Ingreso registrado exitosamente</h3>
+      <p>El código QR ha sido escaneado correctamente.</p>
+      <p>Código Escaneado:</p>
+      <h1 id="codefin"></h1>
+
+      <button class="btn" onclick="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+
+
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script>
+
+    const params = new URLSearchParams(window.location.search);
+    const auth = params.get('authorization');
+
+    function mostrarModal() {
+      document.getElementById('miModal').style.display = 'block';
+    }
+
+    function cerrarModal() {
+      document.getElementById('miModal').style.display = 'none';
+    }
+
+   
+
+
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("codefin").innerText = decodedText;
+      mostrarModal()
+      const final = decodedText.replace("010010-", "").trim();
+      console.log(final)
+      fetch(`https://diosconsejero.com/apr/materials/${final}`)
+      .then(res => res.json())
+      .then((res) => {
+        alert(`Bienvenido ${res.nombre + " " + res.apellido} > click para Iniciar nuevamente`);
+        setTimeout(() => {
+          cerrarModal();
+        }, 6000)
+      })
+      .catch((e) => {
+        alert("Error al registrar el ingreso");
+        console.log(e);
+        document.body.remove();
+      })
+    }
+
+    if (auth == "approval") {
+      const html5QrCode = new Html5Qrcode("qr-reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250
+        },
+        onScanSuccess
+      ).catch(err => {
+        console.error("Error al iniciar el escáner:", err);
+      });
+    } else {
+      document.body.remove();
+      alert("No autorizado para ingresar");
+      throw new Error("No autorizado");
+    }
+
+  </script>
+</body>
+
+</html>

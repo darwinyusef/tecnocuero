@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;600;800&amp;display=swap"
         rel="stylesheet">
-    <title>Document</title>
+    <title>Boleta tecnocuero</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -36,7 +36,7 @@
         </div>
         <main id="app">
     
-            <section class="ticket">
+            <section class="ticket" id="fticket">
     
                 <header class="front">
                     <div class="holo"></div>
@@ -50,10 +50,10 @@
                     <img class="logo principal" src="logotecno.png"
                         alt="The logo for the Application called Threads, an instagram App. It's a '@' symbol but with the tail going in the opposite direction.">
                     <div class="data">
-                        <h3>Día</h3>
-                        <p contenteditable spellcheck=false>11 Septiembre 2025</p>
-                        <h3>Hora</h3>
-                        <p contenteditable spellcheck=false>09:00 a.m. a 05:00 p.m.</p>
+                        <h3>ROL DEL USUARIO</h3>
+                        <p  id="rol" contenteditable spellcheck=false></p>
+                        <h3>Fecha - Hora</h3>
+                        <p contenteditable spellcheck=false><small>11 Septiembre 2025  ⏱ 09:00 a.m. a 05:00 p.m.</small></p>
                         <h3>Tipo de Usuario</h3>
                         <p id="type" contenteditable spellcheck=false>Presencial</p>
                         <a class="qr" href="https://.com/" target="_blank">
@@ -62,7 +62,7 @@
                     </div>
     
                     <aside class="divider">
-                        <div class="username">
+                        <div class="username" style="text-transform: uppercase;">
                             <span  contenteditable spellcheck=false>👦🏻 <span id="name"></span> <span id="last"></span></span>
                         </div>
                         <span id="mobile" class="usernum" contenteditable spellcheck=false></span>
@@ -79,13 +79,24 @@
     <script src="script.js"></script>
     <script>
         const params = new URLSearchParams(window.location.search);
-        const nombre = params.get('nombre');
-        const apellido = params.get('apellido');
-        console.log(nombre,apellido);
-        fetch(`https://diosconsejero.com/apr/materials?nombre=${nombre}&apellido=${apellido}`)
+        const documento = params.get('documento');
+        console.log(documento);
+        if(documento === ''|| documento === null) {
+            alert("No se proporcionó ningún documento. Por favor, verifica e intenta nuevamente.");
+            document.getElementById("fticket").style.display = "none";
+            throw new Error("No documento provided");
+        }
+        
+        fetch(`https://diosconsejero.com/apr/documento?documento=${documento}`)
         .then((res) => res.json())
         .then((res) =>  {
+            if(res.length === 0) {
+                document.getElementById("fticket").style.display = "none";
+                alert("No se encontró el documento. Por favor, verifica e intenta nuevamente.");
+                return;
+            }
             const inf = res[0];
+            document.getElementById("rol").textContent = inf.rol
             document.getElementById("type").textContent = inf.boleta
             document.getElementById("name").textContent = inf.nombre
             document.getElementById("last").textContent = inf.apellido
@@ -100,7 +111,7 @@
             const qrContainer = document.getElementById("qr-result");
             qrContainer.innerHTML = ""; 
 
-            const texto = `216045${textInfo}`;
+            const texto = `010010-${textInfo}`;
 
             new QRCode(qrContainer, {
                 text: texto,

@@ -35,7 +35,10 @@
                 </div>
 
                 <div>
-                    <img src="assets/img/fondo.webp" alt="mujer bolso cuero" class="header-image">
+                    <div
+                        style="background: url('assets/img/fondo.webp') right/cover no-repeat;width:100%;height: 700px;background-size: 1540px; background-position:-210px;">
+                    </div>
+                    <p class="copyimg"><small>© by: inexmoda 94A7608 - AI modified</small></p>
 
                     <p class="info-location">Encuentro entre academia, emprendimiento e industria del cuero, calzado y
                         marroquinería, con enfoque en la economía popular como motor de desarrollo e innovación
@@ -44,6 +47,17 @@
                         ¡Participe y fortalezca su presencia en un sector que avanza con innovación y sentido social!
                         <br>Contaremos con expositores durante toda la jornada.
                     </p>
+
+                    <div class="buscador-container">
+                        <h1>Buscador de Boleta</h1>
+                        <p><small>Si estás inscrito, puedes buscar tu boleta ingresando tus datos.</small></p>
+
+                        <form action="qrcard/index.html?documento=123456789" method="get">
+                            <label for="doc">Documento de identidad</label>
+                            <input type="text" id="doc" name="documento" placeholder="Ingresa tu Documento de identidad" required>
+                            <button class="btn-boleta" type="submit">Buscar Boleta</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </header>
