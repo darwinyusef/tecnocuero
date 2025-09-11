@@ -1,7 +1,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         if (!sessionStorage.getItem("authenticated")) {
-           // document.body.style.display = 'none';
+            // document.body.style.display = 'none';
             alert("No tienes permisos para acceder a esta página");
             // window.location.href = 'loggin.html';
         }
@@ -35,6 +35,13 @@
             flex-direction: column;
             align-items: center;
             gap: 20px;
+        }
+
+        .act {
+            width: 30px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            text-align: center;
         }
 
         .hidden {
@@ -87,26 +94,27 @@
     <header>
         <div class="content_header">
             <div class="bloque_hombre">
-                 <img class="logo" src="../assets/img/logoCmdc.png" alt="Logo de la conferencia" />>
+                <img class="logo" src="../assets/img/logoCmdc.png" alt="Logo de la conferencia" />>
             </div>
         </div>
     </header>
 
-    <div class="markeo">
+    <div class="markeo" style="overflow: scroll;">
         <h2 class="text-center">Registro de asistentes <span id="toggleEye" class="eye-icon">🐵</span></h2>
-        <p style="color: rgba(255,255,255,0.5);">Ingresa los datos del asistente si no esta activo solo selecciona el
+        <p style="color: rgba(0, 0, 0, 0.5);">Ingresa los datos del asistente si no esta activo solo selecciona el
             mono (🐵)</p>
         <div class="atte" id="atten">
             <form id="attendeeForm" class="d-flex flex-column gap-3 p-4 shadow-sm p-4">
+                <input type="number" id="documento" class="form-control" placeholder="documento" required>
                 <input type="text" id="nombre" class="form-control" placeholder="Nombre" required>
                 <input type="text" id="apellido" class="form-control" placeholder="Apellido" required>
                 <input type="email" id="email" class="form-control" placeholder="Email" required>
-                <input type="text" id="celular" class="form-control" placeholder="Celular" required>
-                <input type="text" id="pais_ciudad" class="form-control" placeholder="País/Ciudad" required>
-                <select id="boleta" class="form-select">
-                    <option value="virtual">Virtual</option>
-                    <option value="presencial">Presencial</option>
-                </select>
+                <input type="number" id="celular" class="form-control" placeholder="Celular" required>
+                <input type="text" id="boleta" class="form-control" placeholder="Rol Actual" required>
+                <input type="number" min="1" max="1" value="1" id="ingresado" class="form-control"
+                    placeholder="Ingresar" required>
+                <input type="hidden" id="attendeeId" value="">
+
                 <div class="d-flex gap-3">
                     <button type="submit" class="btn btn-primary">Registrar</button>
                     <button id="limpiar" type="submit" class="btn btn-success">Limpiar</button>
@@ -119,14 +127,18 @@
         <table class="table table-bordered table-striped mt-3">
             <thead class="table-dark">
                 <tr>
+                    <th>Act</th>
+                    <th>Doc</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Email</th>
                     <th>Celular</th>
                     <th>Ubicación</th>
                     <th>Boleta</th>
-                    <th>Materiales</th>
-                    <th>Acciones</th>
+                    <th>Ingresado</th>
+                    <th>Act1</th>
+                    <th>Act2</th>
+
                 </tr>
             </thead>
             <tbody id="attendeesTable"></tbody>
@@ -134,26 +146,54 @@
     </div>
 
     <script>
-        const apiUrl = 'https://diosconsejero.com/api/attendees';
-        const encodedKey = btoa("tecnocueroapi");
-
+        const apiUrl = 'https://diosconsejero.com/apr/attendees';
+        const encodedKey = btoa("tecnocuero2025api");
+        console.log(encodedKey);
         document.getElementById('attendeeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            const id = document.getElementById('attendeeId').value;
+            const isEdit = id !== "";
+
             const data = {
                 nombre: document.getElementById('nombre').value,
                 apellido: document.getElementById('apellido').value,
                 email: document.getElementById('email').value,
                 celular: document.getElementById('celular').value,
-                pais_ciudad: document.getElementById('pais_ciudad').value,
-                boleta: document.getElementById('boleta').value
+                documento: document.getElementById('documento').value,
+                boleta: document.getElementById('boleta').value,
+                ingresado: parseInt(document.getElementById('ingresado').value) || 0,
+                rol: "presencial",
+                act1: "0",
+                act2: "0"
             };
-            await fetch(apiUrl, {
-                method: 'POST', headers: {
-                    "Authorization": `Basic ${encodedKey}`,
-                    "Content-Type": "application/json"
-                }, body: JSON.stringify(data)
-            });
-            loadAttendees();
+
+            const url = isEdit ? `${apiUrl}/${id}` : apiUrl;
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        "Authorization": `Basic ${encodedKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(isEdit ? 'Error al actualizar los datos' : 'Error al crear el asistente');
+                }
+
+                alert(isEdit ? '✅ Asistente actualizado correctamente.' : '✅ Asistente registrado correctamente.');
+
+                // Redirigir después de éxito
+                window.location.reload(); // <- cambia esta ruta según tu aplicación
+
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+                console.error(error);
+            }
         });
 
         async function loadAttendees() {
@@ -169,17 +209,21 @@
             tbody.innerHTML = '';
             attendees.forEach(att => {
                 const row = `<tr>
+                    <td id="${att.id}">
+                        <div class="act" onclick="editAttendee(${att.id})">✍🏻</div>
+                        <div class="act" onclick="deleteAttendee(${att.id})">🆑</div>
+                    </td>
+                    <td>${att.documento}</td>
                     <td>${att.nombre}</td>
                     <td>${att.apellido}</td>
                     <td>${att.email}</td>
                     <td>${att.celular}</td>
-                    <td>${att.pais_ciudad}</td>
+                    <td>${att.rol}</td>
                     <td>${att.boleta}</td>
-                    <td>${att.materiales}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick="editAttendee(${att.id})">Editar</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteAttendee(${att.id})">Eliminar</button>
-                    </td>
+                    <td>${att.ingresado == 1 ? "SI" : "NO"}</td>
+                    <td>${att.act1}</td>
+                    <td>${att.act2}</td>
+                    
                 </tr>`;
                 tbody.innerHTML += row;
             });
@@ -200,36 +244,35 @@
         }
 
         async function editAttendee(id) {
-            const res = await fetch(`${apiUrl}/${id}`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Basic ${encodedKey}`,
-                    "Content-Type": "application/json"
-                }
-            });
-            const att = await res.json();
-            document.getElementById('nombre').value = att.nombre;
-            document.getElementById('apellido').value = att.apellido;
-            document.getElementById('email').value = att.email;
-            document.getElementById('celular').value = att.celular;
-            document.getElementById('pais_ciudad').value = att.pais_ciudad;
-            document.getElementById('boleta').value = att.boleta;
+            try {
+                const res = await fetch(`${apiUrl}/${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Basic ${encodedKey}`,
+                        "Content-Type": "application/json"
+                    }
+                });
 
-            document.getElementById('attendeeForm').onsubmit = async (e) => {
-                e.preventDefault();
-                const updatedData = {
-                    nombre: document.getElementById('nombre').value,
-                    apellido: document.getElementById('apellido').value,
-                    email: document.getElementById('email').value,
-                    celular: document.getElementById('celular').value,
-                    pais_ciudad: document.getElementById('pais_ciudad').value,
-                    boleta: document.getElementById('boleta').value
-                };
-                await fetch(`${apiUrl}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updatedData) });
-                loadAttendees();
-                document.getElementById('attendeeForm').reset();
-                document.getElementById('attendeeForm').onsubmit = (ev) => ev.preventDefault();
-            };
+                if (!res.ok) throw new Error("No se pudo obtener el asistente");
+
+                const att = await res.json();
+
+                // Rellenar los campos del formulario
+                document.getElementById('nombre').value = att.nombre;
+                document.getElementById('apellido').value = att.apellido;
+                document.getElementById('email').value = att.email;
+                document.getElementById('celular').value = att.celular;
+                document.getElementById('boleta').value = att.boleta;
+                document.getElementById('documento').value = att.documento;
+                document.getElementById('ingresado').value = att.ingresado;
+
+                // Marcar que estamos editando
+                document.getElementById('attendeeId').value = id;
+
+            } catch (error) {
+                alert(`❌ Error al cargar los datos: ${error.message}`);
+                console.error(error);
+            }
         }
 
         loadAttendees();

@@ -27,7 +27,6 @@
                 <p>Para el registro e ingreso al evento por favor presenta esta boleta junto con tu documento de identidad físico. <br>
                 El registro se llevará a cabo el 11 de septiembre en el transcurso del evento.
                 </p>
-                <p>En el momento del registro recibirás información / recursos necesarios para tu participación en las conferencias o en el gran final</p>
               </div>
             
               <p class="important">
@@ -80,7 +79,7 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const documento = params.get('documento');
-        console.log(documento);
+        //console.log(documento);
         if(documento === ''|| documento === null) {
             alert("No se proporcionó ningún documento. Por favor, verifica e intenta nuevamente.");
             document.getElementById("fticket").style.display = "none";

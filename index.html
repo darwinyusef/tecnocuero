@@ -34,9 +34,10 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="info-bloque">
                     <div
-                        style="background: url('assets/img/fondo.webp') right/cover no-repeat;width:100%;height: 700px;background-size: 1540px; background-position:-210px;">
+                        class="img-header"
+                        style="background: url('assets/img/fondo.webp') right/cover no-repeat;">
                     </div>
                     <p class="copyimg"><small>© by: inexmoda 94A7608 - AI modified</small></p>
 
@@ -54,7 +55,8 @@
 
                         <form action="qrcard/index.html?documento=123456789" method="get">
                             <label for="doc">Documento de identidad</label>
-                            <input type="text" id="doc" name="documento" placeholder="Ingresa tu Documento de identidad" required>
+                            <input class="sending" type="text" id="doc" name="documento" placeholder="Ingresa tu Documento de identidad"
+                                required>
                             <button class="btn-boleta" type="submit">Buscar Boleta</button>
                         </form>
                     </div>
@@ -65,11 +67,11 @@
         <main class="agenda-container">
             <div class="principal-logos">
                 <img src="./assets/img/LOGO-DEFINITIVI-TECNOCURO-2025.png" alt="Logo del evento Tecno Cuero XVII"
-                    class="left-logo" style="top: 12%;" />
+                    class="left-logo" style="top: 15%;" />
                 <img src="./assets/img/logoicpa.png" alt="logo icpa" class="left-logo" style="top: 30%;">
-                <img src="./assets/img/logoFull.png" alt="logo-full" class="left-logo" style="top: 42%;">
-                <img src="./assets/img/logoCmdc.png" alt="logo-sena" class="left-logo" style="top: 62%;">
-                <img src="./assets/img/logoAcicam.png" alt="logo-acicam" class="left-logo" style="top: 82%">
+                <img src="./assets/img/logoFull.png" alt="logo-full" class="left-logo" style="top: 46%;">
+                <img src="./assets/img/logoCmdc.png" alt="logo-sena" class="left-logo" style="top: 64%;">
+                <img src="./assets/img/logoAcicam.png" alt="logo-acicam" class="left-logo" style="top: 80%">
             </div>
 
             <div class="agenda-column">
@@ -207,19 +209,21 @@
 
 
     <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '1239410867516606');
-        fbq('track', 'PageView');
+        if (window.innerWidth >= 1000) {
+            !function (f, b, e, v, n, t, s) {
+                if (f.fbq) return; n = f.fbq = function () {
+                    n.callMethod ?
+                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+                n.queue = []; t = b.createElement(e); t.async = !0;
+                t.src = v; s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1239410867516606');
+            fbq('track', 'PageView');
+        }
     </script>
     <noscript>
         <img height="1" width="1" style="display:none"

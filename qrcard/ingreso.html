@@ -18,14 +18,11 @@
   </div>
   <div id="qr-reader"></div>
 
-  <div id="miModal" class="modal">
+  <div id="modalIngreso" class="modal">
     <div class="modal-content">
-      <h3>Ingreso registrado exitosamente</h3>
-      <p>El código QR ha sido escaneado correctamente.</p>
-      <p>Código Escaneado:</p>
-      <h1 id="codefin"></h1>
-
-      <button class="btn" onclick="cerrarModal()">Cerrar</button>
+      <h2 id="mensajeIngreso"></h2>
+      <p><strong>Actividad 1:</strong> <span id="evento1"></span></p>
+      <p><strong>Actividad 2:</strong> <span id="evento2"></span></p>
     </div>
   </div>
 
@@ -37,34 +34,55 @@
     const auth = params.get('authorization');
 
     function mostrarModal() {
-      document.getElementById('miModal').style.display = 'block';
+      document.getElementById("modalIngreso").style.display = "block";
     }
 
     function cerrarModal() {
-      document.getElementById('miModal').style.display = 'none';
+      document.getElementById("modalIngreso").style.display = "none";
     }
-
-   
 
 
     function onScanSuccess(decodedText, decodedResult) {
       document.getElementById("codefin").innerText = decodedText;
-      mostrarModal()
+
       const final = decodedText.replace("010010-", "").trim();
-      console.log(final)
+
       fetch(`https://diosconsejero.com/apr/materials/${final}`)
-      .then(res => res.json())
-      .then((res) => {
-        alert(`Bienvenido ${res.nombre + " " + res.apellido} > click para Iniciar nuevamente`);
-        setTimeout(() => {
-          cerrarModal();
-        }, 6000)
-      })
-      .catch((e) => {
-        alert("Error al registrar el ingreso");
-        console.log(e);
-        document.body.remove();
-      })
+        .then(res => res.json())
+        .then((res) => {
+          // Mostrar modal
+          mostrarModal();
+
+          // Mostrar mensaje de backend
+          const mensaje = res.message || "✔️ Ingreso registrado correctamente.";
+          document.getElementById("mensajeIngreso").innerText = mensaje;
+
+          // Mostrar eventos (si existen)
+          const evento1 = getEventoById(res.attendee?.act1 || res.act1);
+          const evento2 = getEventoById(res.attendee?.act2 || res.act2);
+
+          if (evento1) {
+            document.getElementById("evento1").innerText = `${evento1.hora} - ${evento1.evento}`;
+          } else {
+            document.getElementById("evento1").innerText = "Sin actividad registrada.";
+          }
+
+          if (evento2) {
+            document.getElementById("evento2").innerText = `${evento2.hora} - ${evento2.evento}`;
+          } else {
+            document.getElementById("evento2").innerText = "Sin actividad registrada.";
+          }
+
+          // Cerrar modal después de 10 segundos
+          setTimeout(() => {
+            cerrarModal();
+          }, 10000);
+        })
+        .catch((e) => {
+          alert("❌ Error al registrar el ingreso");
+          console.error(e);
+          document.body.remove(); // cuidado con esto si no estás seguro
+        });
     }
 
     if (auth == "approval") {

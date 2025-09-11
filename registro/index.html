@@ -72,8 +72,8 @@
     </div>
 
     <script>
-        const apiUrl = 'https://diosconsejero.com/api/attendees';
-        const encodedKey = btoa("diosconsejeroapi");
+        const apiUrl = 'https://diosconsejero.com/apr/attendees';
+        const encodedKey = btoa("tecnocuero2025api");
 
         document.getElementById('attendeeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -88,11 +88,7 @@
             };
             const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             console.log(response);
-            if (data.boleta === "virtual") {
-                window.location.href = "https://biz.payulatam.com/L0e918f3A23B4A3";
-            } else {
-                window.location.href = "https://biz.payulatam.com/B0e918fB15922F6";
-            }
+        
             loadAttendees();
         });
 
