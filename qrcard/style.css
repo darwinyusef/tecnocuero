@@ -44,7 +44,7 @@ body {
   padding: 20px;
   width: 90%;
   max-width: 400px;
-  border-radius: 10px;
+  border-radius: 0px;
   text-align: center;
 }
 
@@ -85,7 +85,7 @@ body {
   background-size: 100% 220vh;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 15px;
+  border-radius: 0px;
   display: grid;
   backface-visibility: visible;
   transform: translateZ(1px);
@@ -125,7 +125,7 @@ body {
   display: block;
   position: absolute;
   inset: 0;
-  border-radius: 15px;
+  border-radius: 0px;
 }
 
 .holo {
@@ -216,8 +216,6 @@ p {
   display: block;
   image-rendering: optimize-speed;
   image-rendering: crisp-edges;
-  border-radius: 20px;
-  overflow: hidden;
 }
 
 .divider {
